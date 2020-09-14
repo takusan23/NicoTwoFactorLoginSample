@@ -40,7 +40,8 @@ class MainActivity : AppCompatActivity() {
         login_button.setOnClickListener {
             lifecycleScope.launch {
                 val response = postLogin("めあど", "ぱすわーど")
-                if (response.headers["Location"] == "https://secure.nicovideo.jp/secure/") {
+                // ユーザーセッションがあれば二段階認証ではない
+                if (response.headers.find { pair -> pair.second.contains("user_session=user_session") } != null) {
                     println("二段階認証では有りません")
                     println("ユーザーセッション：${parseUserSession(response)}")
                 } else {
